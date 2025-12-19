@@ -167,6 +167,7 @@ public class EntityToDtoMapper {
         dto.setQuestionContent(questionEntity.getQuestionContent());
         dto.setCategory(questionEntity.getCategory());
         dto.setDifficulty(questionEntity.getDifficulty());
+        dto.setQuestionType(questionEntity.getQuestionType());
 
         // WRITTEN questions → no options
         if (questionEntity.getQuestionType() == QuestionType.WRITTEN) {
