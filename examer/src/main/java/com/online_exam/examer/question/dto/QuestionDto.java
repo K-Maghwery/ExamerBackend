@@ -18,7 +18,8 @@ public class QuestionDto {
     private QuestionType questionType;
 
     // Null for WRITTEN
-    private List<OptionDto> options;
+    private List<String> options;
+    //private List<OptionDto> options;
 
     // Empty for WRITTEN
     private List<Integer> correctOptionIndexes;

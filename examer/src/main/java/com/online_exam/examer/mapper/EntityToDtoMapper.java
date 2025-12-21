@@ -176,25 +176,24 @@ public class EntityToDtoMapper {
             return dto;
         }
 
-        // Map options
-        List<OptionDto> optionDtos = new ArrayList<>();
+        List<String> options = new ArrayList<>();
         List<Integer> correctIndexes = new ArrayList<>();
 
-        List<QuestionOptionEntity> options = questionEntity.getOptions();
+        List<QuestionOptionEntity> optionEntities = questionEntity.getOptions();
 
-        for (int i = 0; i < options.size(); i++) {
-            QuestionOptionEntity option = options.get(i);
+        for (int i = 0; i < optionEntities.size(); i++) {
+            QuestionOptionEntity option = optionEntities.get(i);
 
-            optionDtos.add(
-                    new OptionDto(option.getOptionId(), option.getOptionText())
-            );
+            // ✅ ONLY option text
+            options.add(option.getOptionText());
 
-            if (option.getIsCorrect()) {
+            // ✅ store index of correct option
+            if (Boolean.TRUE.equals(option.getIsCorrect())) {
                 correctIndexes.add(i);
             }
         }
 
-        dto.setOptions(optionDtos);
+        dto.setOptions(options);
         dto.setCorrectOptionIndexes(correctIndexes);
 
         return dto;
