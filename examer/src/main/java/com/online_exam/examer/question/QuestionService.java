@@ -21,7 +21,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class QuestionService implements IQuestionService {
 
-    private final QuestionRepositary questionRepositary;
+    private final QuestionRepository questionRepositary;
     private final EntityToDtoMapper entityToDtoMapper;
 
 

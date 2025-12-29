@@ -14,7 +14,7 @@ import com.online_exam.examer.exception.ResourceNotFoundException;
 import com.online_exam.examer.mapper.EntityToDtoMapper;
 import com.online_exam.examer.mapper.PageDto;
 import com.online_exam.examer.question.QuestionEntity;
-import com.online_exam.examer.question.QuestionRepositary;
+import com.online_exam.examer.question.QuestionRepository;
 import com.online_exam.examer.user.UserDto;
 import com.online_exam.examer.user.UserEntity;
 import com.online_exam.examer.user.UserRepository;
@@ -41,7 +41,7 @@ public class ExamSubmissionService implements IExamSubmissionService {
     private final UserRepository userRepository;
     private final ExamRepository examRepository;
     private final EntityToDtoMapper entityToDtoMapper;
-    private final QuestionRepositary questionRepositary;
+    private final QuestionRepository questionRepositary;
     private final EmailService emailService;
     private final EncryptionUtil encryptionUtil;
     private final Environment environment;
@@ -88,7 +88,9 @@ public class ExamSubmissionService implements IExamSubmissionService {
 
 
         final String examLink = environment.getProperty("public.url")+"exam/takeExam?id="+encryptedId;
-        emailService.sendExamLinkToUser(user.getEmail(),examLink,exam.getExamTitle(),exam.getExamDuration());
+        //emailService.sendExamLinkToUser(user.getEmail(),examLink,exam.getExamTitle(),exam.getExamDuration());
+        System.out.println("Exam Link (Local Testing): " + examLink);
+
 
         // Fetch the all users with pagination
         Page<UserEntity> users = userRepository.findUsersByExamIdAndSubmissionStatus(exam.getExamId(),user.getAdmin().getAdminId(),pageable);

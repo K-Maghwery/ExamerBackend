@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuestionRepositary extends JpaRepository<QuestionEntity,Long> {
+public interface QuestionRepository extends JpaRepository<QuestionEntity,Long> {
 @Query("SELECT new com.online_exam.examer.question.dto.CategoryDto(q.category, " +
         "SUM(CASE WHEN (q.difficulty = 'Easy' OR q.difficulty = 'easy') AND q.isDeleted = false THEN 1 ELSE 0 END), " +
         "SUM(CASE WHEN (q.difficulty = 'Medium' OR q.difficulty = 'medium') AND q.isDeleted = false THEN 1 ELSE 0 END), " +

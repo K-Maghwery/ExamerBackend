@@ -13,6 +13,9 @@ import com.online_exam.examer.question.enums.QuestionType;
 import com.online_exam.examer.question.request.AddQuestionRequest;
 import com.online_exam.examer.user.UserDto;
 import com.online_exam.examer.user.UserEntity;
+import com.online_exam.examer.user_answers.UserAnswerEntity;
+import com.online_exam.examer.user_answers.UserAnswerOptionEntity;
+import com.online_exam.examer.user_answers.dto.UserAnswerViewDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
@@ -71,42 +74,40 @@ public class EntityToDtoMapper {
 //    }
 
     public ExamQuestionsDto questionToExamQuestionsDto(QuestionEntity questionEntity) {
+        if (questionEntity == null) {
+            return null;
+        }
 
         ExamQuestionsDto dto = new ExamQuestionsDto();
         dto.setQuestionId(questionEntity.getQuestionId());
         dto.setQuestionContent(questionEntity.getQuestionContent());
         dto.setQuestionType(questionEntity.getQuestionType());
 
-        // WRITTEN question
+        // WRITTEN question → options = null
         if (questionEntity.getQuestionType() == QuestionType.WRITTEN) {
             dto.setOptions(null);
             dto.setCorrectOptionIndexes(List.of());
             return dto;
         }
 
-        List<OptionDto> optionDtos = new ArrayList<>();
+        List<String> optionTexts = new ArrayList<>();
         List<Integer> correctIndexes = new ArrayList<>();
 
         List<QuestionOptionEntity> options = questionEntity.getOptions();
-
         for (int i = 0; i < options.size(); i++) {
             QuestionOptionEntity option = options.get(i);
+            optionTexts.add(option.getOptionText());
 
-            optionDtos.add(
-                    new OptionDto(option.getOptionId(), option.getOptionText())
-            );
-
-            if (option.getIsCorrect()) {
+            if (Boolean.TRUE.equals(option.getIsCorrect())) {
                 correctIndexes.add(i);
             }
         }
 
-        dto.setOptions(optionDtos);
+        dto.setOptions(optionTexts);
         dto.setCorrectOptionIndexes(correctIndexes);
 
         return dto;
     }
-
 
     public List<ExamQuestionsDto> questionsToExamQuestionsDtoList(List<QuestionEntity> questionEntities) {
         return questionEntities.stream().map(this::questionToExamQuestionsDto).collect(Collectors.toList());
@@ -304,6 +305,49 @@ public class EntityToDtoMapper {
     }
 
 
+    /******************** USER ANSWERS MAPPER ********************/
+
+// Convert a single UserAnswerEntity to UserAnswerViewDto
+    public UserAnswerViewDto userAnswerToDto(UserAnswerEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        UserAnswerViewDto dto = new UserAnswerViewDto();
+
+        // Basic question info
+        dto.setQuestionId(entity.getQuestion().getQuestionId());
+
+        // Written answer (for WRITTEN questions)
+        dto.setWrittenAnswer(entity.getWrittenAnswer());
+
+        // If question type is WRITTEN → no selected options
+        if (entity.getQuestion().getQuestionType() == QuestionType.WRITTEN) {
+            dto.setSelectedOptions(List.of());
+            return dto;
+        }
+
+        // MCQ / TF → map selected options
+        List<OptionDto> selectedOptions = new ArrayList<>();
+        if (entity.getSelectedOptions() != null) {
+            for (UserAnswerOptionEntity uao : entity.getSelectedOptions()) {
+                OptionDto optionDto = new OptionDto();
+                optionDto.setOptionId(uao.getOption().getOptionId());
+                optionDto.setOptionText(uao.getOption().getOptionText());
+                selectedOptions.add(optionDto);
+            }
+        }
+
+        dto.setSelectedOptions(selectedOptions);
+        return dto;
+    }
+
+    // Convert a list of UserAnswerEntity to List<UserAnswerViewDto>
+    public List<UserAnswerViewDto> userAnswersToDtoList(List<UserAnswerEntity> entities) {
+        return entities.stream()
+                .map(this::userAnswerToDto)
+                .collect(Collectors.toList());
+    }
 
 
 

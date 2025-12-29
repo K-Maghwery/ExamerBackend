@@ -6,11 +6,8 @@ import com.online_exam.examer.exception.ResourceNotFoundException;
 import com.online_exam.examer.mapper.EntityToDtoMapper;
 import com.online_exam.examer.mapper.PageDto;
 import com.online_exam.examer.question.QuestionEntity;
-import com.online_exam.examer.question.QuestionRepositary;
+import com.online_exam.examer.question.QuestionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +27,7 @@ public class ExamService implements IExamService {
     private final ExamRepository examRepository;
     private final AdminRepository adminRepository;
     private final EntityToDtoMapper entityToDtoMapper;
-    private final QuestionRepositary questionRepositary;
+    private final QuestionRepository questionRepositary;
 
 
     @Transactional
